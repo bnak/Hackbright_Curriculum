@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block body %}
+<table class="table table-striped">
+    <tr><th>Melon Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
+    {% if melon_list%}
+        {% for id in melon_list %}
+        <tr><td>{{melon_list[id].common_name}}</td><td>{{qty[id]}}</td><td>{{melon_list[id].price_str()}}</td><td>{{"$%.2f"%(qty[id] * melon_list[id].price)}}</td></tr>
+        {% endfor %} 
+    {% endif %}
+</table>
+<h3>Total: {{"$%.2f"%total_price}} </h3>
+
+<a href="/melons" class="btn btn-large btn-primary">Continue Shopping</a>
+<a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
+{% endblock %}

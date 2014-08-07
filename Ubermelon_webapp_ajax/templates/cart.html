@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block body %}
+<table class="table table-striped">
+    <tr><th>Melon Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
+    {% for melon, qty in melons %}
+    <tr>
+        <td>{{ melon.common_name }}</td>
+        <td><div>
+                <a href= "/decrease" class="btn btn-danger btn-xs decrease-btn">-</a>
+                    <span id="melon-qty-{{melon.id}}" data-melon-id="{{ melon.id }}">{{ qty }}</span>
+                <a href= "/increase" class="btn btn-primary btn-xs increase-btn">+</a>
+            </div>
+        </td>
+        <td>{{ melon.price_str() }}</td>
+        <td>{{ "$%.2f"%(melon.price * qty) }}</td></tr>
+    {% endfor %}
+</table>
+<h3>Total: ${{"%.2f"%total}}</h3>
+<a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
+
+<script type="text/javascript">
+
+function increase() {
+    melon_id = $("span").html();
+    alert(melon_id);
+    target = $(this).siblings("span");
+    target.text(melon_id);
+};
+
+function decrease() {
+    target = $(this).siblings("span");
+    target.text("less");
+};
+
+function main(){
+    var increase_button = $("a.increase-btn");
+    increase_button.click(increase);
+
+    var decrease_button = $("a.decrease-btn");
+    decrease_button.click(decrease);
+};
+
+$(main);
+
+</script>
+{% endblock %}

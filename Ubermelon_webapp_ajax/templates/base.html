@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/static/css/style.css" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="cart">
+            <div id="cart-target"></div>
+            <a id="cart-close" class="btn btn-xs btn-default">Close</a>
+        </div>
+
+        <div class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <img src="/static/img/ubermelonsmall.png"><a class="navbar-brand" href="/">Ubermelon</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a id = "myMelonCart" href="/cart"><img class="melon-cart" src="/static/img/watermelon.png"> My Melon Cart</a></li>
+                        <li><a href="/login">Log In</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <ul class="flashes">
+                <li>{{message}}</li>
+            </ul>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            {% block body %}{% endblock %}
+        </div>
+
+    <script type="text/javascript">
+
+
+        function showCartSummary(data){
+            var cart_target = $("div#cart-target");
+            cart_target.html(data);
+            $("div#cart").show();
+            return false;
+        };
+
+
+        function hideCartSummary(){
+            var cart = $("div#cart");
+            cart.hide();
+        };
+
+        function getCartContents(){
+            $.get("/cart_items", showCartSummary)
+        };
+
+
+        function main(){
+            var cart = $("a#myMelonCart");
+            cart.mouseover(getCartContents);
+
+            var cartClose = $("a#cart-close");
+            cartClose.click(hideCartSummary);
+        };
+
+$(main);
+
+</script>
+
+
+
+    </body>
+</html>

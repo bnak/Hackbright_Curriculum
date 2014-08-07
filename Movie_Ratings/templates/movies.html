@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/static/css/style.css" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id = "movie-list">
+            <input type="submit" value="Submit">
+            <table class = "table">
+            <tr><th>Movie ID</th><th>Movie Title</th><th>Current Rating</th><th>Update Rating</th></tr>
+            {% for rating in ratings %}
+            <div>
+            <span id = "{{rating.item_id}}" class="movie-rating">
+                <form class="form-rating" action = "/update_movies" method="POST">
+                    <tr>
+                        <th>{{rating.item_id}}</th>
+                        <th>{{rating.movie.movie_title}}</th>
+                        <th>{{rating.rating}}</th>
+                        <th>{% for i in [1,2,3,4,5] %}
+                            {% if i == rating.rating %}
+                            <input class = "movie-radio" id = "{{rating.item_id}}" type="radio" name="rating" value="{{i}}" checked>{{i}}</input>
+                            {% else %}
+                            <input class = "movie-radio" id = "{{rating.item_id}}" type="radio" name="rating" value="{{i}}" >{{i}}</input>
+                            {% endif %}
+                            {% endfor %}
+                        </th>
+                    </tr>
+                </form>
+            </span>
+            </div>
+            {% endfor %}
+            </table>
+        </div>
+        <script type = "text/javascript">
+
+            // $('.table .movie-radio').on('click', function(evt){
+            //     var radioButton = $(evt.currentTarget);
+            //     var rating = radioButton.val();
+            //     var movie_id = radioButton.closest('.movie-rating').attr('id');
+            //     console.log(pressed);
+            //     console.log(movie_id);
+            // });
+
+            function buttonClicked() {
+                var radioButton = $(this);
+                var rating = radioButton.val();
+                var movie_id = radioButton.attr('id');
+                console.log(movie_id);
+
+                return ("/update_movies", rating, movie_id)
+            }
+
+            function main(){
+
+                var allChangedRatings = {}
+
+                var newRating = $("table .movie-radio");
+                //Space indicates movie-radio button class within the table class  
+                newRating.click(buttonClicked);
+            }
+
+            $(main);
+
+        /*
+         * $.post("/myroute", data, function () {
+            console.log("success");
+         });
+        http://www.w3.org/TR/html401/interact/forms.html
+        */
+        // $(select something).function()
+            // when user clicks on "span.movie-rating input"
+
+            // get the id of parent span
+
+            // send post request to "/url", sending the movie id and rating number
+        </script>
+    </body>
+</html>
+

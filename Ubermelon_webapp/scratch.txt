@@ -1,0 +1,67 @@
+                        {% if customer %}
+                            <li>{{customer.givenname}}</li>
+                            <li><a href="/logout">Log Out</a></li>
+                        {% else %}
+                            <li><a href="/login">Log In</a></li>
+                        {% endif %}
+
+                        , customer = user
+
+def shopping_cart():
+    """TODO: Display the contents of the shopping cart. The shopping cart is a
+    list held in the session that contains all the melons to be added. Check
+    accompanying screenshots for details."""
+    purchased_melon_list = {}
+    total_price = 0
+    session['cart'] = session.get('cart', [])
+    for melon_id in session['cart']:
+        m = model.get_melon_by_id(melon_id)
+        purchased_melon_list[melon_id] = purchased_melon_list.get(melon_id, [None, None, 0])
+        
+        if purchased_melon_list[m.id] == [None, None, 0]:
+            purchased_melon_list[m.id] = [m.common_name, m.price, 1]
+        else:
+            purchased_melon_list[m.id][2] += 1
+        total_price += (purchased_melon_list[m.id][1])
+
+    print purchased_melon_list
+    print total_price
+
+    if not purchased_melon_list:
+        flash("Buy melons!")
+
+    return render_template("cart.html", melon_list=purchased_melon_list, total_price=total_price)
+
+
+
+    {% extends 'base.html' %}
+{% block body %}
+<table class="table table-striped">
+    <tr><th>Melon Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
+    {% if melon_list%}
+        {% for melon in melon_list %}
+        <tr><td>{{melon_list[melon][0]}}</td><td>{{melon_list[melon][2]}}</td><td>{{"$%.2f"%melon_list[melon][1]}}</td><td>{{"$%.2f"%(melon_list[melon][2]*melon_list[melon][1])}}</td></tr>
+        {% endfor %} 
+    {% endif %}
+</table>
+<h3>Total: {{"$%.2f"%total_price}} </h3>
+<a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
+{% endblock %}
+
+
+
+def shopping_cart():
+    tally = collections.Counter(session['cart'])
+    #print tally
+    purchased_melons = dict((m_id, model.get_melon_by_id(m_id)) for (m_id, qty) in tally.iteritems())
+
+   # print purchased_melons
+
+    total_price = sum([purchased_melons[m_id].price * tally[m_id] for m_id in tally])
+
+   # print total_price
+
+    if not purchased_melons:
+        flash("Buy melons!")
+
+    return render_template("cart.html", melon_list=purchased_melons, qty=tally, total_price=total_price)
